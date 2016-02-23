@@ -1,0 +1,8 @@
+{
+  "name": "r2gnodesever",
+  "description": "",
+  "license": "MIT",
+  "dependencies": {
+    "jquery": "~2.2.1"
+  }
+}
