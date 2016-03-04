@@ -7,7 +7,6 @@ var port = 4200;
 var main = module.exports.app = express();
 var server = http.createServer(main);
 var io = require('socket.io').listen(server);
-var client2 = null;
 
 main.use(bodyParser.urlencoded({
     extended: true
@@ -15,31 +14,27 @@ main.use(bodyParser.urlencoded({
 main.use(bodyParser.json());
 main.use(express.static(__dirname + '/bower_components'));
 main.get('/', function(req, res, next) {
-    console.log('index !');
     res.sendFile(__dirname + '/index.html');
 });
 
 io.on('connection', function(client) {
-    client2 = client;
-    console.log('Client connected...');
-
+    console.log('Client connected !');
     client.on('join', function(data) {
-        console.log(data);
+        console.log(data + 'joined');
+        client.join(data);
     });
 
-    client.on('messages', function(data) {
-    	console.log(data);
-        client.emit('broad', data);
-        client.broadcast.emit('broad', data); //brodcast all other clients
-    });
+    client.on("disconnect",function(){
+        console.log(client.room + 'gone away !');
+        client.leave(client.room);
+    })
 
 });
 
 main.post('/msg', function(req, res) {
-    console.log(req.body);
     if (req.body.uuid != undefined && req.body.msgcount != undefined) {
-        res.send('There are ' + req.body.msgcount + ' unread messages for user ' + req.body.uuid);
-        io.emit('msgcount', req.body);
+        res.send('OK');
+        io.to(req.body.uuid).emit('msgcount', req.body);
     }
     else {
         res.send('Nothings !');
