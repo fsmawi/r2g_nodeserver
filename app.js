@@ -11,6 +11,7 @@ var io = require('socket.io').listen(server);
 main.use(bodyParser.urlencoded({
     extended: true
 }));
+
 main.use(bodyParser.json());
 main.use(express.static(__dirname + '/bower_components'));
 main.get('/', function(req, res, next) {
@@ -18,14 +19,14 @@ main.get('/', function(req, res, next) {
 });
 
 io.on('connection', function(client) {
-    console.log('Client connected !');
+    // console.log('Client connected !');
     client.on('join', function(data) {
-        console.log(data + 'joined');
+        // console.log(data + 'joined');
         client.join(data);
     });
 
     client.on("disconnect",function(){
-        console.log(client.room + 'gone away !');
+        // console.log(client.room + 'gone away !');
         client.leave(client.room);
     })
 
